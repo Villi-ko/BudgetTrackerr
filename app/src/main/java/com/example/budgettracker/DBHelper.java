@@ -67,4 +67,35 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return total;
     }
+    public java.util.List<String> getAllCalculationsAsStrings() {
+        java.util.List<String> list = new java.util.ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT " + COLUMN_N1 + ", " + COLUMN_N2 + ", " + COLUMN_SUM +
+                " FROM " + TABLE_CALCULATIONS +
+                " ORDER BY " + COLUMN_ID + " DESC";
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                double n1 = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_N1));
+                double n2 = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_N2));
+                double sum = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_SUM));
+
+                String row = n1 + " + " + n2 + " = " + sum;
+                list.add(row);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return list;
+    }
+    public void deleteAllCalculations() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_CALCULATIONS, null, null);
+        db.close();
+    }
+
 }

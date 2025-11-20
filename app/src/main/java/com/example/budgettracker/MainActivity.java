@@ -1,6 +1,7 @@
 package com.example.budgettracker;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +15,8 @@ public class MainActivity extends AppCompatActivity {
     private EditText editTextNumber1;
     private EditText editTextNumber2;
     private Button buttonCalculate;
+    private Button buttonToggleTheme;
+    private Button buttonHistoryMain;
     private DBHelper dbHelper;
 
     @Override
@@ -24,8 +27,43 @@ public class MainActivity extends AppCompatActivity {
         editTextNumber1 = findViewById(R.id.editTextNumber1);
         editTextNumber2 = findViewById(R.id.editTextNumber2);
         buttonCalculate = findViewById(R.id.buttonCalculate);
+        buttonToggleTheme = findViewById(R.id.buttonToggleTheme);
+        buttonHistoryMain = findViewById(R.id.buttonHistoryMain);
 
         dbHelper = new DBHelper(this);
+
+        int currentNightMode = AppCompatDelegate.getDefaultNightMode();
+        if (currentNightMode == AppCompatDelegate.MODE_NIGHT_YES) {
+            buttonToggleTheme.setText("☀");
+        } else {
+            buttonToggleTheme.setText("☾");
+        }
+
+        buttonToggleTheme.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                int mode = AppCompatDelegate.getDefaultNightMode();
+
+                if (mode == AppCompatDelegate.MODE_NIGHT_YES) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    buttonToggleTheme.setText("☾");
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    buttonToggleTheme.setText("☀");
+                }
+
+                recreate();
+            }
+        });
+
+        buttonHistoryMain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
+                startActivity(intent);
+            }
+        });
 
         buttonCalculate.setOnClickListener(new View.OnClickListener() {
             @Override
